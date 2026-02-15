@@ -2,13 +2,23 @@
 import { GoogleGenAI, Type, GenerateContentParameters } from "@google/genai";
 import { InvestigationStep, Priority } from "../types";
 
-// Utilisation d'une fonction pour obtenir l'instance afin d'éviter les erreurs au chargement si API_KEY est undefined
+/**
+ * Récupère la clé API de manière sécurisée sans faire planter l'application
+ * si l'objet process est manquant (cas fréquent sur GitHub Pages).
+ */
+const getApiKey = (): string => {
+  try {
+    return (typeof process !== 'undefined' && process.env?.API_KEY) || "";
+  } catch (e) {
+    return "";
+  }
+};
+
 const getAI = () => {
-  const apiKey = process.env.API_KEY || "";
+  const apiKey = getApiKey();
   return new GoogleGenAI({ apiKey });
 };
 
-// Fonction utilitaire pour anonymiser le texte avant l'envoi à l'IA
 const anonymize = (text: string): string => {
   if (!text) return "";
   return text
@@ -36,9 +46,6 @@ RÈGLES DE CONFIDENTIALITÉ :
 2. Vos réponses doivent être strictement professionnelles et conformes au Code de Procédure Pénale.
 3. Ne mentionnez jamais d'informations confidentielles réelles.`;
 
-/**
- * Exécute une requête Gemini avec une logique de retry optimisée pour le modèle Flash.
- */
 async function generateWithRetry(params: GenerateContentParameters, retries = 3, delay = 1000): Promise<any> {
   const ai = getAI();
   try {
@@ -56,7 +63,6 @@ async function generateWithRetry(params: GenerateContentParameters, retries = 3,
   }
 }
 
-// Utilisation de gemini-3-flash-preview pour de meilleurs quotas
 const MODEL_NAME = 'gemini-3-flash-preview';
 
 export const generateInvestigationPlan = async (infraction: string, modusOperandi: string): Promise<InvestigationStep[]> => {
