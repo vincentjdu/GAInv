@@ -25,16 +25,20 @@ import {
   History,
   AlertTriangle
 } from 'lucide-react';
-import { CaseData, InvestigationStep, Priority, CaseCategory } from './types';
-import { generateInvestigationPlan, suggestNextSteps, generateDocumentDraft } from './services/gemini';
+import { CaseData, InvestigationStep, Priority, CaseCategory } from './types.ts';
+import { generateInvestigationPlan, suggestNextSteps, generateDocumentDraft } from './services/gemini.ts';
 
 const STORAGE_KEY = 'gendarme_ai_cases';
 
 const App: React.FC = () => {
   // State for all cases
   const [cases, setCases] = useState<CaseData[]>(() => {
-    const saved = localStorage.getItem(STORAGE_KEY);
-    return saved ? JSON.parse(saved) : [];
+    try {
+      const saved = localStorage.getItem(STORAGE_KEY);
+      return saved ? JSON.parse(saved) : [];
+    } catch (e) {
+      return [];
+    }
   });
 
   // UI State

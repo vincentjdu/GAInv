@@ -1,6 +1,6 @@
 
 import { GoogleGenAI, Type, GenerateContentParameters } from "@google/genai";
-import { InvestigationStep, Priority } from "../types";
+import { InvestigationStep, Priority } from "../types.ts";
 
 /**
  * Récupère la clé API de manière sécurisée sans faire planter l'application
