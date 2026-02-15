@@ -1,0 +1,7 @@
+{
+  "name": "Gendarme-AI Investigator",
+  "description": "Assistant intelligent pour officiers de gendarmerie permettant de structurer les investigations criminelles, générer des trames d'enquête et suggérer des actes de procédure basés sur le mode opératoire.",
+  "requestFramePermissions": [
+    "geolocation"
+  ]
+}
