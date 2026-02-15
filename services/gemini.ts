@@ -2,8 +2,11 @@
 import { GoogleGenAI, Type, GenerateContentParameters } from "@google/genai";
 import { InvestigationStep, Priority } from "../types";
 
-const API_KEY = process.env.API_KEY || "";
-const ai = new GoogleGenAI({ apiKey: API_KEY });
+// Utilisation d'une fonction pour obtenir l'instance afin d'éviter les erreurs au chargement si API_KEY est undefined
+const getAI = () => {
+  const apiKey = process.env.API_KEY || "";
+  return new GoogleGenAI({ apiKey });
+};
 
 // Fonction utilitaire pour anonymiser le texte avant l'envoi à l'IA
 const anonymize = (text: string): string => {
@@ -37,6 +40,7 @@ RÈGLES DE CONFIDENTIALITÉ :
  * Exécute une requête Gemini avec une logique de retry optimisée pour le modèle Flash.
  */
 async function generateWithRetry(params: GenerateContentParameters, retries = 3, delay = 1000): Promise<any> {
+  const ai = getAI();
   try {
     const response = await ai.models.generateContent(params);
     return response;
